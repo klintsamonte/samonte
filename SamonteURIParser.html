@@ -1,0 +1,111 @@
+<html>
+
+<head>
+	<title>URI PARSER</title>
+	<script>
+		function doIt() {
+			var integer = 0;
+			var string = document.getElementById("uri").value;
+			var scheme = "no scheme found";
+			var authority = "no authority found";
+			var path = "no path found";
+			var query = "no query found";
+			var fragment = "no fragment found";
+			for (var i = integer; i < string.length ; i++) {
+				if(string.charAt(i) == ':'){
+					if(string.charAt(i+1) == '/'){
+						if(string.charAt(i+2) == '/'){
+							scheme = string.substring(integer, i);
+							integer = i+3;
+							i = string.length;
+						}
+					}else{
+						scheme = string.substring(integer, i);
+						integer = i+2;
+						i = string.length;
+					}
+				}else if(string.charAt(i) == '/'){
+					if(i == string.length-1){
+						authority = "dito" + string.substring(integer, string.length-1);
+					}
+				}else if(i == string.length-1){
+					authority = "why" + string;
+				}
+			}
+			if(authority == "no authority found"){
+				for (var i = integer; i < string.length ; i++) {
+					if(string.charAt(i) == '/'){
+						authority = string.substring(integer, i);
+						integer = i;
+						i = string.length;
+					}
+				}
+			}
+			//path na diri
+			for (var i = integer+1; i < string.length ; i++) {
+				if(string.charAt(i) == '?'){
+					path = string.substring(integer, i);
+					if(path == "/")
+						path = "no path found";
+					integer = i;
+					i = string.length;
+				}else if(string.charAt(i) == '/'){
+					if(i == string.length-1){
+						path = "hala" + string.substring(integer, i);
+						integer = i;
+						i = string.length;
+					}
+				}
+			}
+			var found = false;
+			for (var i = integer; i < string.length ; i++) {
+				if(string.charAt(i) == '?'){
+					found = true;
+				}
+				if(string.charAt(i) == '#'){
+					if(found)
+						query = string.substring(integer, i);	
+					else path = "dito" + string.substring(integer, i+1);
+					fragment = string.substring(i, string.length);
+					integer = i;
+					i = string.length;
+				}else if(i == string.length-1){
+					if(found)
+						query = string.substring(integer, i);	
+					else path = "try" + string.substring(integer, i+1);
+					integer = i;
+					i = string.length;
+				}
+			}
+			document.getElementById("scheme").value = scheme; // => "http:"
+			document.getElementById("authority").value = authority; // => "example.com"
+			document.getElementById("path").value = path;
+			document.getElementById("query").value = query;
+			document.getElementById("fragment").value = fragment;
+		}	
+	</script>
+</head>
+
+<body>
+	<hr> 
+	<center>
+		<h1>URI Parser</h1> 
+		<form name="z">
+			<input name="uriText" id="uri" type="text"> <p>
+			<input name="uriButton" type="button" value = "Parse" onClick = "doIt()"> 
+		</form>
+			<h4>Scheme:    
+				<input name="schemeText" id="scheme" type="text" value="scheme"> <p>
+				Authority: 
+				<input name="authorityText" id="authority" type="text" value="authority"> <p>
+				Path: 
+				<input name="pathText" id="path" type="text" value="path"> <p>
+				Query:
+				<input name="queryText" id="query" type="text" value="query"> <p>
+				Fragment:
+				<input name="fragmentText" id="fragment" type="text" value="fragment"> <p>
+			</h4>
+	</center>
+	<hr>
+</body>
+</html>
